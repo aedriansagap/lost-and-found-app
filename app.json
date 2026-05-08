@@ -29,9 +29,14 @@
         {
           "action": "VIEW",
           "data": [
-            { "scheme": "recall" }
+            {
+              "scheme": "recall"
+            }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -45,7 +50,8 @@
       "expo-font",
       "expo-web-browser",
       "expo-notifications",
-      "expo-mail-composer"
+      "expo-mail-composer",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

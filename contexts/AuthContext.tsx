@@ -124,12 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setIsPasswordResetFlow(true);
         } else if (event === 'SIGNED_IN' && session?.user) {
           setUser(session.user);
-          const hasProfile = await loadProfile(session.user.id);
-          if (!hasProfile) {
-            await supabase.auth.signOut({ scope: 'global' });
-            setUser(null);
-            setProfile(null);
-          }
+          await loadProfile(session.user.id);
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
           setProfile(null);
