@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Keyboa
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { User, Eye, EyeOff } from 'lucide-react-native';
+import { User, Eye, EyeOff, Mail, Lock } from 'lucide-react-native';
 import { router } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import ResponsiveContainer from '@/components/ResponsiveContainer';
@@ -129,236 +129,247 @@ export default function AuthScreen() {
       <ResponsiveContainer>
         <KeyboardAvoidingView 
           style={styles.container} 
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          <ScrollView 
+            contentContainerStyle={styles.scrollContent} 
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
             {/* Header */}
             <View style={styles.header}>
-              <View style={styles.logoContainer}>
+              <View style={[styles.logoContainer, { backgroundColor: colors.surface, shadowColor: colors.primary }]}>
                 <Image 
                   source={require('../../assets/images/icon.png')} 
                   style={styles.logo}
                   resizeMode="contain"
                 />
               </View>
-            <Text style={[styles.title, { color: colors.text }]}>RECLAIM</Text>
-            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-              Lost & Found for your school community
-            </Text>
-          </View>
+              <Text style={[styles.title, { color: colors.text }]}>RECLAIM</Text>
+              <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+                Lost & Found for your school community
+              </Text>
+            </View>
 
-          {/* Form */}
-          <View style={[styles.form, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Text style={[styles.formTitle, { color: colors.text }]}>
-              {isLogin ? 'Welcome Back' : 'Create Account'}
-            </Text>
-            <Text style={[styles.formSubtitle, { color: colors.textSecondary }]}>
-              {isLogin ? 'Sign in to your account' : 'Join your school community'}
-            </Text>
+            {/* Form */}
+            <View style={[styles.form, { backgroundColor: colors.card, borderColor: colors.border, shadowColor: colors.text }]}>
+              <Text style={[styles.formTitle, { color: colors.text }]}>
+                {isLogin ? 'Welcome Back' : 'Create Account'}
+              </Text>
+              <Text style={[styles.formSubtitle, { color: colors.textSecondary }]}>
+                {isLogin ? 'Sign in to access your dashboard' : 'Join your school community securely'}
+              </Text>
 
-            {/* Full Name (Sign Up only) */}
-            {!isLogin && (
+              {/* Full Name (Sign Up only) */}
+              {!isLogin && (
+                <View style={styles.inputGroup}>
+                  <Text style={[styles.inputLabel, { color: colors.text }]}>Full Name</Text>
+                  <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+                    <User size={20} color={colors.textSecondary} style={styles.inputIcon} />
+                    <TextInput
+                      style={[styles.textInputFull, { color: colors.text }]}
+                      placeholder="Enter your full name"
+                      placeholderTextColor={colors.textSecondary}
+                      value={fullName}
+                      onChangeText={setFullName}
+                      autoCapitalize="words"
+                    />
+                  </View>
+                </View>
+              )}
+
+              {/* Email */}
               <View style={styles.inputGroup}>
-                <Text style={[styles.inputLabel, { color: colors.text }]}>Full Name</Text>
-                <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-                  <User size={20} color={colors.textSecondary} />
-                  <TextInput
-                    style={[styles.textInput, { color: colors.text }]}
-                    placeholder="Enter your full name"
-                    placeholderTextColor={colors.textSecondary}
-                    value={fullName}
-                    onChangeText={setFullName}
-                    autoCapitalize="words"
-                  />
-                </View>
-              </View>
-            )}
-
-            {/* Email */}
-            <View style={styles.inputGroup}>
-              <Text style={[styles.inputLabel, { color: colors.text }]}>Educational Email</Text>
-              <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}> 
-                <TextInput
-                  style={[styles.textInputFull, { color: colors.text }]}
-                  placeholder="Enter you email here"
-                  placeholderTextColor={colors.textSecondary}
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-              </View>
-              <Text style={[styles.helpText, { color: colors.textSecondary }]}> 
-                Only educational (.edu) emails are allowed
-              </Text>
-            </View>
-
-            {/* Password */}
-            <View style={styles.inputGroup}>
-              <Text style={[styles.inputLabel, { color: colors.text }]}>Password</Text>
-              <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-                <TextInput
-                  style={[styles.textInputFull, { color: colors.text }]}
-                  placeholder="Enter your password"
-                  placeholderTextColor={colors.textSecondary}
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                  {showPassword ? (
-                    <EyeOff size={20} color={colors.textSecondary} />
-                  ) : (
-                    <Eye size={20} color={colors.textSecondary} />
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/* Confirm Password (Sign Up only) */}
-            {!isLogin && (
-              <View style={styles.inputGroup}>
-                <Text style={[styles.inputLabel, { color: colors.text }]}>Confirm Password</Text>
-                <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+                <Text style={[styles.inputLabel, { color: colors.text }]}>Educational Email</Text>
+                <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}> 
+                  <Mail size={20} color={colors.textSecondary} style={styles.inputIcon} />
                   <TextInput
                     style={[styles.textInputFull, { color: colors.text }]}
-                    placeholder="Confirm your password"
-                    placeholderTextColor={colors.textSecondary}
-                    value={confirmPassword}
-                    onChangeText={setConfirmPassword}
-                    secureTextEntry={!showPassword}
-                  />
-                </View>
-              </View>
-            )}
-
-            {/* Forgot Password Link (Login only) */}
-            {isLogin && (
-              <TouchableOpacity
-                style={{ alignSelf: 'flex-end', marginBottom: 12 }}
-                onPress={() => {
-                  setForgotModalVisible(true);
-                  setForgotEmail(email);
-                  setForgotSuccess('');
-                  setForgotError('');
-                }}
-              >
-                <Text style={{ color: colors.primary, fontFamily: 'Inter-SemiBold' }}>Forgot Password?</Text>
-              </TouchableOpacity>
-            )}
-
-            {/* Submit Button */}
-            <TouchableOpacity
-              style={[styles.submitButton, { backgroundColor: colors.primary }]}
-              onPress={handleSubmit}
-              disabled={loading}
-            >
-              <Text style={[styles.submitButtonText, { color: colors.card }]}>
-                {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Sign Up')}
-              </Text>
-            </TouchableOpacity>
-
-            {/* Switch Mode */}
-            <TouchableOpacity
-              style={styles.switchButton}
-              onPress={() => setIsLogin(!isLogin)}
-            >
-              <Text style={[styles.switchText, { color: colors.textSecondary }]}>
-                {isLogin ? "Don't have an account? " : "Already have an account? "}
-                <Text style={{ color: colors.primary }}>
-                  {isLogin ? 'Sign Up' : 'Sign In'}
-                </Text>
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Reset Password Modal (Deep link flow) */}
-          {isPasswordResetFlow && (
-            <View style={styles.modalOverlay}>
-              <View style={[styles.modalContent, { backgroundColor: colors.card, borderColor: colors.border }]}> 
-                <Text style={[styles.modalTitle, { color: colors.text }]}>Set New Password</Text>
-                <Text style={[styles.modalSubtitle, { color: colors.textSecondary }]}>Enter and confirm your new password to complete the reset.</Text>
-                <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border, marginTop: 16 }]}> 
-                  <TextInput
-                    style={[styles.textInputFull, { color: colors.text }]}
-                    placeholder="New password"
-                    placeholderTextColor={colors.textSecondary}
-                    secureTextEntry
-                    value={resetPassword}
-                    onChangeText={setResetPassword}
-                  />
-                </View>
-                <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border, marginTop: 8 }]}> 
-                  <TextInput
-                    style={[styles.textInputFull, { color: colors.text }]}
-                    placeholder="Confirm new password"
-                    placeholderTextColor={colors.textSecondary}
-                    secureTextEntry
-                    value={resetConfirmPassword}
-                    onChangeText={setResetConfirmPassword}
-                  />
-                </View>
-                {resetError ? (
-                  <Text style={{ color: colors.error, marginTop: 8 }}>{resetError}</Text>
-                ) : null}
-                {resetSuccess ? (
-                  <Text style={{ color: colors.success, marginTop: 8 }}>{resetSuccess}</Text>
-                ) : null}
-                <TouchableOpacity
-                  style={[styles.submitButton, { backgroundColor: colors.primary, marginTop: 16 }]} 
-                  onPress={handleCompleteReset}
-                  disabled={resetLoading}
-                >
-                  <Text style={[styles.submitButtonText, { color: colors.card }]}> 
-                    {resetLoading ? 'Updating...' : 'Update Password'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-
-          {/* Forgot Password Modal */}
-          {forgotModalVisible && (
-            <View style={styles.modalOverlay}>
-              <View style={[styles.modalContent, { backgroundColor: colors.card, borderColor: colors.border }]}> 
-                <Text style={[styles.modalTitle, { color: colors.text }]}>Reset Password</Text>
-                <Text style={[styles.modalSubtitle, { color: colors.textSecondary }]}>Enter your educational email to receive a password reset link.</Text>
-                <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border, marginTop: 16 }]}> 
-                  <Text style={[styles.emailPrefix, { color: colors.textSecondary }]}>@</Text>
-                  <TextInput
-                    style={[styles.textInput, { color: colors.text }]}
                     placeholder="student@university.edu"
                     placeholderTextColor={colors.textSecondary}
-                    value={forgotEmail}
-                    onChangeText={setForgotEmail}
+                    value={email}
+                    onChangeText={setEmail}
                     keyboardType="email-address"
                     autoCapitalize="none"
                   />
                 </View>
-                {forgotError ? (
-                  <Text style={{ color: colors.error, marginTop: 8 }}>{forgotError}</Text>
-                ) : null}
-                {forgotSuccess ? (
-                  <Text style={{ color: colors.success, marginTop: 8 }}>{forgotSuccess}</Text>
-                ) : null}
+                <Text style={[styles.helpText, { color: colors.textSecondary }]}> 
+                  Only educational (.edu) emails are allowed
+                </Text>
+              </View>
+
+              {/* Password */}
+              <View style={styles.inputGroup}>
+                <Text style={[styles.inputLabel, { color: colors.text }]}>Password</Text>
+                <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+                  <Lock size={20} color={colors.textSecondary} style={styles.inputIcon} />
+                  <TextInput
+                    style={[styles.textInputFull, { color: colors.text }]}
+                    placeholder="Enter your password"
+                    placeholderTextColor={colors.textSecondary}
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={!showPassword}
+                  />
+                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                    {showPassword ? (
+                      <EyeOff size={20} color={colors.textSecondary} />
+                    ) : (
+                      <Eye size={20} color={colors.textSecondary} />
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Confirm Password (Sign Up only) */}
+              {!isLogin && (
+                <View style={styles.inputGroup}>
+                  <Text style={[styles.inputLabel, { color: colors.text }]}>Confirm Password</Text>
+                  <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+                    <Lock size={20} color={colors.textSecondary} style={styles.inputIcon} />
+                    <TextInput
+                      style={[styles.textInputFull, { color: colors.text }]}
+                      placeholder="Confirm your password"
+                      placeholderTextColor={colors.textSecondary}
+                      value={confirmPassword}
+                      onChangeText={setConfirmPassword}
+                      secureTextEntry={!showPassword}
+                    />
+                  </View>
+                </View>
+              )}
+
+              {/* Forgot Password Link (Login only) */}
+              {isLogin && (
                 <TouchableOpacity
-                  style={[styles.submitButton, { backgroundColor: colors.primary, marginTop: 16 }]} 
-                  onPress={handleForgotPassword}
-                  disabled={forgotLoading}
+                  style={styles.forgotPasswordLink}
+                  onPress={() => {
+                    setForgotModalVisible(true);
+                    setForgotEmail(email);
+                    setForgotSuccess('');
+                    setForgotError('');
+                  }}
                 >
-                  <Text style={[styles.submitButtonText, { color: colors.card }]}> 
-                    {forgotLoading ? 'Sending...' : 'Send Reset Link'}
-                  </Text>
+                  <Text style={{ color: colors.primary, fontFamily: 'Inter-SemiBold', fontSize: 14 }}>Forgot Password?</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={{ alignSelf: 'center', marginTop: 12 }}
-                  onPress={() => setForgotModalVisible(false)}
-                >
-                  <Text style={{ color: colors.primary, fontFamily: 'Inter-SemiBold' }}>Close</Text>
+              )}
+
+              {/* Submit Button */}
+              <TouchableOpacity
+                style={[
+                  styles.submitButton, 
+                  { backgroundColor: colors.primary, shadowColor: colors.primary }
+                ]}
+                onPress={handleSubmit}
+                disabled={loading}
+              >
+                <Text style={[styles.submitButtonText, { color: '#FFFFFF' }]}>
+                  {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
+                </Text>
+              </TouchableOpacity>
+
+              {/* Switch Mode */}
+              <View style={styles.switchContainer}>
+                <Text style={[styles.switchText, { color: colors.textSecondary }]}>
+                  {isLogin ? "Don't have an account?" : "Already have an account?"}
+                </Text>
+                <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
+                  <Text style={[styles.switchAction, { color: colors.primary }]}>
+                    {isLogin ? ' Sign Up' : ' Sign In'}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
-          )}
+
+            {/* Reset Password Modal (Deep link flow) */}
+            {isPasswordResetFlow && (
+              <View style={styles.modalOverlay}>
+                <View style={[styles.modalContent, { backgroundColor: colors.card, borderColor: colors.border }]}> 
+                  <Text style={[styles.modalTitle, { color: colors.text }]}>Set New Password</Text>
+                  <Text style={[styles.modalSubtitle, { color: colors.textSecondary }]}>Enter and confirm your new password to complete the reset.</Text>
+                  <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border, marginTop: 16 }]}> 
+                    <Lock size={20} color={colors.textSecondary} style={styles.inputIcon} />
+                    <TextInput
+                      style={[styles.textInputFull, { color: colors.text }]}
+                      placeholder="New password"
+                      placeholderTextColor={colors.textSecondary}
+                      secureTextEntry
+                      value={resetPassword}
+                      onChangeText={setResetPassword}
+                    />
+                  </View>
+                  <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border, marginTop: 12 }]}> 
+                    <Lock size={20} color={colors.textSecondary} style={styles.inputIcon} />
+                    <TextInput
+                      style={[styles.textInputFull, { color: colors.text }]}
+                      placeholder="Confirm new password"
+                      placeholderTextColor={colors.textSecondary}
+                      secureTextEntry
+                      value={resetConfirmPassword}
+                      onChangeText={setResetConfirmPassword}
+                    />
+                  </View>
+                  {resetError ? (
+                    <Text style={{ color: colors.error, marginTop: 12 }}>{resetError}</Text>
+                  ) : null}
+                  {resetSuccess ? (
+                    <Text style={{ color: colors.success, marginTop: 12 }}>{resetSuccess}</Text>
+                  ) : null}
+                  <TouchableOpacity
+                    style={[styles.submitButton, { backgroundColor: colors.primary, marginTop: 24, width: '100%' }]} 
+                    onPress={handleCompleteReset}
+                    disabled={resetLoading}
+                  >
+                    <Text style={[styles.submitButtonText, { color: '#FFFFFF' }]}> 
+                      {resetLoading ? 'Updating...' : 'Update Password'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+
+            {/* Forgot Password Modal */}
+            {forgotModalVisible && (
+              <View style={styles.modalOverlay}>
+                <View style={[styles.modalContent, { backgroundColor: colors.card, borderColor: colors.border }]}> 
+                  <Text style={[styles.modalTitle, { color: colors.text }]}>Reset Password</Text>
+                  <Text style={[styles.modalSubtitle, { color: colors.textSecondary }]}>Enter your educational email to receive a password reset link.</Text>
+                  <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border, marginTop: 16 }]}> 
+                    <Mail size={20} color={colors.textSecondary} style={styles.inputIcon} />
+                    <TextInput
+                      style={[styles.textInputFull, { color: colors.text }]}
+                      placeholder="student@university.edu"
+                      placeholderTextColor={colors.textSecondary}
+                      value={forgotEmail}
+                      onChangeText={setForgotEmail}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                    />
+                  </View>
+                  {forgotError ? (
+                    <Text style={{ color: colors.error, marginTop: 12 }}>{forgotError}</Text>
+                  ) : null}
+                  {forgotSuccess ? (
+                    <Text style={{ color: colors.success, marginTop: 12 }}>{forgotSuccess}</Text>
+                  ) : null}
+                  <TouchableOpacity
+                    style={[styles.submitButton, { backgroundColor: colors.primary, marginTop: 24, width: '100%' }]} 
+                    onPress={handleForgotPassword}
+                    disabled={forgotLoading}
+                  >
+                    <Text style={[styles.submitButtonText, { color: '#FFFFFF' }]}> 
+                      {forgotLoading ? 'Sending...' : 'Send Reset Link'}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{ alignSelf: 'center', marginTop: 16, paddingVertical: 8 }}
+                    onPress={() => setForgotModalVisible(false)}
+                  >
+                    <Text style={{ color: colors.textSecondary, fontFamily: 'Inter-Medium' }}>Close</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
           </ScrollView>
         </KeyboardAvoidingView>
       </ResponsiveContainer>
@@ -372,7 +383,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    padding: 20,
+    paddingHorizontal: 24,
+    paddingVertical: 32,
     justifyContent: 'center',
   },
   header: {
@@ -380,42 +392,50 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   logoContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 88,
+    height: 88,
+    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    padding: 8,
+    marginBottom: 20,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 10,
   },
   logo: {
-    width: 60,
-    height: 60,
+    width: 56,
+    height: 56,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontFamily: 'Inter-Bold',
     marginBottom: 8,
+    letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 16,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Inter-Medium',
     textAlign: 'center',
+    opacity: 0.8,
   },
   form: {
-    padding: 24,
-    borderRadius: 16,
+    padding: 28,
+    borderRadius: 24,
     borderWidth: 1,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.08,
+    shadowRadius: 24,
+    elevation: 8,
   },
   formTitle: {
-    fontSize: 24,
+    fontSize: 26,
     fontFamily: 'Inter-Bold',
     textAlign: 'center',
     marginBottom: 8,
   },
   formSubtitle: {
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: 'Inter-Regular',
     textAlign: 'center',
     marginBottom: 32,
@@ -425,83 +445,103 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 14,
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Inter-SemiBold',
     marginBottom: 8,
+    marginLeft: 4,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 8,
+    height: 56,
+    borderRadius: 14,
     borderWidth: 1,
   },
-  emailPrefix: {
-    fontSize: 16,
-    fontFamily: 'Inter-Regular',
-    marginRight: 4,
-  },
-  textInput: {
-    flex: 1,
-    fontSize: 16,
-    fontFamily: 'Inter-Regular',
-    marginLeft: 8,
+  inputIcon: {
+    marginRight: 12,
   },
   textInputFull: {
     flex: 1,
     fontSize: 16,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Inter-Medium',
+    height: '100%',
+  },
+  eyeIcon: {
+    padding: 8,
   },
   helpText: {
     fontSize: 12,
-    fontFamily: 'Inter-Regular',
-    marginTop: 4,
+    fontFamily: 'Inter-Medium',
+    marginTop: 6,
+    marginLeft: 4,
+    opacity: 0.8,
+  },
+  forgotPasswordLink: {
+    alignSelf: 'flex-end',
+    marginBottom: 16,
+    paddingVertical: 4,
+    paddingHorizontal: 4,
   },
   submitButton: {
-    paddingVertical: 16,
-    borderRadius: 8,
+    height: 56,
+    borderRadius: 14,
     alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 12,
-    marginBottom: 20,
+    marginBottom: 28,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 6,
   },
   submitButtonText: {
-    fontSize: 16,
-    fontFamily: 'Inter-SemiBold',
+    fontSize: 17,
+    fontFamily: 'Inter-Bold',
   },
-  switchButton: {
+  switchContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   switchText: {
-    fontSize: 14,
-    fontFamily: 'Inter-Regular',
+    fontSize: 15,
+    fontFamily: 'Inter-Medium',
+  },
+  switchAction: {
+    fontSize: 15,
+    fontFamily: 'Inter-Bold',
   },
   modalOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1000,
+    padding: 24,
   },
   modalContent: {
-    width: '80%',
-    padding: 24,
-    borderRadius: 16,
+    width: '100%',
+    maxWidth: 400,
+    padding: 32,
+    borderRadius: 24,
     borderWidth: 1,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.2,
+    shadowRadius: 24,
+    elevation: 16,
   },
   modalTitle: {
     fontSize: 24,
     fontFamily: 'Inter-Bold',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   modalSubtitle: {
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: 'Inter-Regular',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
+    lineHeight: 22,
   },
 });
