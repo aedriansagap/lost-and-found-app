@@ -211,7 +211,11 @@ export default function AuthScreen() {
                     onChangeText={setPassword}
                     secureTextEntry={!showPassword}
                   />
-                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                  <TouchableOpacity 
+                    onPress={() => setShowPassword(!showPassword)} 
+                    style={styles.eyeIcon}
+                    hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                  >
                     {showPassword ? (
                       <EyeOff size={20} color={colors.textSecondary} />
                     ) : (
@@ -467,7 +471,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   eyeIcon: {
-    padding: 8,
+    marginLeft: 8,
   },
   helpText: {
     fontSize: 12,
